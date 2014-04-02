@@ -1,5 +1,7 @@
 using System;
 using MySql.Data.MySqlClient;
+// using System.Data para interfaces
+
 namespace PArticulo
 {
 	class MainClass
@@ -16,6 +18,14 @@ namespace PArticulo
 			mySqlConnection.Open();
 			
 			string sql = "select * from articulo";
+			MySqlCommand updateMySqlCommand = mySqlConnection.CreateCommand();
+			
+			//TODO
+			updateMySqlCommand.CommandText = "update articulo set nombre=nombre where id=1"; //acabar ejerc parametro
+			
+			//TODO parametro
+			updateMySqlCommand.ExecuteNonQuery();
+			//
 			
 			MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
 			mySqlCommand.CommandText = sql;
@@ -30,6 +40,7 @@ namespace PArticulo
 			while (mySqlDataReader.Read()){
 				Console.WriteLine("id={0} nombre={1}", mySqlDataReader["id"], mySqlDataReader["nombre"]);
 			}
+			mySqlDataReader.Close();
 			mySqlConnection.Close();
 						
 		}
