@@ -12,12 +12,12 @@ namespace PArticulo
 				"User Id=root;" +
 				"Password =sistemas";
 			
-			MySqlConnection IDbConnection = new MySqlConnection(conexion);
-			IDbConnection.Open();
+			MySqlConnection mySqlConnection = new MySqlConnection(conexion);
+			mySqlConnection.Open();
 			
 			string sql = "select * from articulo";
 			
-			MySqlCommand mySqlCommand = IDbConnection.CreateCommand();
+			MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
 			mySqlCommand.CommandText = sql;
 			
 			MySqlDataReader mySqlDataReader;
@@ -26,7 +26,7 @@ namespace PArticulo
     		while (mySqlDataReader.Read()) {
        		Console.WriteLine(mySqlDataReader.GetString(0) + ", " + mySqlDataReader.GetString(1));
     		}
-			IDbConnection.Close();
+			mySqlConnection.Close();
 						
 		}
 	}
