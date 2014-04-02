@@ -23,9 +23,13 @@ namespace PArticulo
 			MySqlDataReader mySqlDataReader;
 			mySqlDataReader = mySqlCommand.ExecuteReader();
     
-    		while (mySqlDataReader.Read()) {
-       		Console.WriteLine(mySqlDataReader.GetString(0) + ", " + mySqlDataReader.GetString(1));
-    		}
+    	//	while (mySqlDataReader.Read()) {
+      // 		Console.WriteLine(mySqlDataReader.GetString(0) + ", " + mySqlDataReader.GetString(1)+ ", "+mySqlDataReader.GetString(2));
+    //		}
+			
+			while (mySqlDataReader.Read()){
+				Console.WriteLine("id={0} nombre={1}", mySqlDataReader["id"], mySqlDataReader["nombre"]);
+			}
 			mySqlConnection.Close();
 						
 		}
