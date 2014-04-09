@@ -19,15 +19,18 @@ namespace PArticulo
 			String horaActual = DateTime.Now.ToString();
 			
 			string sql = "select * from articulo";
-			string sqlUpdate = String.Format("update articulo set nombre={0} where id=1",horaActual);
 			
+			//Para el update
 			MySqlCommand updateMySqlCommand = mySqlConnection.CreateCommand();
-			updateMySqlCommand.CommandText = sqlUpdate;
+			updateMySqlCommand.CommandText = "update articulo set nombre=@nombre where id=1";
+			MySqlParameter mySqlParameter = updateMySqlCommand.CreateParameter();
+			mySqlParameter.ParameterName = "nombre";
+			mySqlParameter.Value = horaActual;
+			updateMySqlCommand.Parameters.Add(mySqlParameter);
+			
 			updateMySqlCommand.ExecuteNonQuery();
 			
-			
-			
-			
+			//Para leer el select
 			MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
 			mySqlCommand.CommandText = sql;
 			MySqlDataReader mySqlDataReader;
