@@ -1,6 +1,7 @@
 using System;
 using MySql.Data.MySqlClient;
-// using System.Data para interfaces
+using PSerpisAd;
+using System.Data;
 
 namespace PArticulo
 {
@@ -8,36 +9,40 @@ namespace PArticulo
 	{
 		public static void Main (string[] args)
 		{
-			string conexion =
-				"Server=localhost;" +
-				"Database=dbrepaso;" +
-				"User Id=root;" +
-				"Password =sistemas";
+			App.Instance.DbConnection = new MySqlConnection("Server=localhost;Database=dbprueba;User Id=root;Password=sistemas");
 			
-			MySqlConnection mySqlConnection = new MySqlConnection(conexion);
-			mySqlConnection.Open();
 			String horaActual = DateTime.Now.ToString();
-			
 			string sql = "select * from articulo";
 			
-			//Para el update
-			MySqlCommand updateMySqlCommand = mySqlConnection.CreateCommand();
-			updateMySqlCommand.CommandText = "update articulo set nombre=@nombre where id=1";
-			MySqlParameter mySqlParameter = updateMySqlCommand.CreateParameter();
-			mySqlParameter.ParameterName = "nombre";
-			mySqlParameter.Value = horaActual;
-			updateMySqlCommand.Parameters.Add(mySqlParameter);
 			
-			updateMySqlCommand.ExecuteNonQuery();
+			//Para el update con interfaces y metodo de parametros
+			IDbCommand updateDbCommand = App.Instance.DbConnection.CreateCommand();
+			updateDbCommand.CommandText = "update articulo set nombre=@nombre where id=1";
+			
+			DbCommandUtil.AddParameter(updateDbCommand,"nombre",horaActual);
+			updateDbCommand.ExecuteNonQuery();
+			
+			//Para delete
+			IDbCommand deleteDbCommand = App.Instance.DbConnection.CreateCommand();
+			deleteDbCommand.CommandText = "delete from articulo where id=@numerodelete";
+			
+			DbCommandUtil.AddParameter(deleteDbCommand,"numerodelete",6);
+			deleteDbCommand.ExecuteNonQuery(); 
+			
+			//Para insertar
+		    IDbCommand insertDbCommand = App.Instance.DbConnection.CreateCommand();
+			insertDbCommand.CommandText = "insert into articulo (id,nombre)" +
+											 "values(6,@nombreinsert)";
+			
+			DbCommandUtil.AddParameter(insertDbCommand,"nombreinsert","articulo 6");
+			insertDbCommand.ExecuteNonQuery(); 
 			
 			//Para leer el select
-			MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
-			mySqlCommand.CommandText = sql;
-			MySqlDataReader mySqlDataReader;
-			mySqlDataReader = mySqlCommand.ExecuteReader();
+			IDbCommand selectDbCommand = App.Instance.DbConnection.CreateCommand();
+			selectDbCommand.CommandText = sql;
+			IDataReader mySqlDataReader;
+			mySqlDataReader = selectDbCommand.ExecuteReader();
     		
-			
-			
 			
     	//	while (mySqlDataReader.Read()) {
       // 		Console.WriteLine(mySqlDataReader.GetString(0) + ", " + mySqlDataReader.GetString(1)+ ", "+mySqlDataReader.GetString(2));
@@ -48,7 +53,7 @@ namespace PArticulo
 			}
 			
 			mySqlDataReader.Close();
-			mySqlConnection.Close();
+			App.Instance.DbConnection.Close();
 						
 		}
 	}
