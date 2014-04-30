@@ -22,14 +22,14 @@ namespace PArticulo
 			DbCommandUtil.AddParameter(updateDbCommand,"nombre",horaActual);
 			updateDbCommand.ExecuteNonQuery();
 			
-			//Para delete
+			//Para delete con interfaces y metodo de parametros
 			IDbCommand deleteDbCommand = App.Instance.DbConnection.CreateCommand();
 			deleteDbCommand.CommandText = "delete from articulo where id=@numerodelete";
 			
 			DbCommandUtil.AddParameter(deleteDbCommand,"numerodelete",6);
 			deleteDbCommand.ExecuteNonQuery(); 
 			
-			//Para insertar
+			//Para insertar con interfaces y metodo de parametros
 		    IDbCommand insertDbCommand = App.Instance.DbConnection.CreateCommand();
 			insertDbCommand.CommandText = "insert into articulo (id,nombre)" +
 											 "values(6,@nombreinsert)";
@@ -37,13 +37,13 @@ namespace PArticulo
 			DbCommandUtil.AddParameter(insertDbCommand,"nombreinsert","articulo 6");
 			insertDbCommand.ExecuteNonQuery(); 
 			
-			//Para leer el select
+			//Select y lectura del select con interfaces y metodo de parametros
 			IDbCommand selectDbCommand = App.Instance.DbConnection.CreateCommand();
 			selectDbCommand.CommandText = sql;
 			IDataReader mySqlDataReader;
 			mySqlDataReader = selectDbCommand.ExecuteReader();
     		
-			
+			//Metodo alternativo Reader
     	//	while (mySqlDataReader.Read()) {
       // 		Console.WriteLine(mySqlDataReader.GetString(0) + ", " + mySqlDataReader.GetString(1)+ ", "+mySqlDataReader.GetString(2));
     //		}
