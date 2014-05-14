@@ -24,6 +24,36 @@ public partial class MainWindow: Gtk.Window
 		ListStore listStore = newListStore(dataReader.FieldCount);
 		treeView.Model = listStore;
 		fillListStore(listStore,dataReader);
+		
+		//DELETE
+		deleteAction.Sensitive = false;
+		
+		deleteAction.Activated += delegate {
+			if (treeView.Selection.CountSelectedRows() == 0)
+				return;
+			
+			TreeIter treeIter;
+			treeView.Selection.GetSelected(out treeIter);
+			object id = listStore.GetValue (treeIter,0);
+			
+			MessageDialog messageDialog = new MessageDialog(this,
+			  DialogFlags.DestroyWithParent, MessageType.Question,
+			  ButtonsType.YesNo,"¿Quieres eliminar el elemento seleccionado?");
+			  messageDialog.Title = "Eliminar elemento";
+			
+			ResponseType response = (ResponseType)messageDialog.Run(); 
+			messageDialog.Destroy();
+			if (response == ResponseType.Yes) {
+			IDbCommand deleteDbCommand = App.Instance.DbConnection.CreateCommand();
+			deleteDbCommand.CommandText = "delete from articulo where id=" +id;
+				deleteDbCommand.ExecuteNonQuery();
+			}
+		};
+			treeView.Selection.Changed += delegate {
+			bool hasSelectedRows = treeView.Selection.CountSelectedRows() > 0;
+			editAction.Sensitive = hasSelectedRows;
+			deleteAction.Sensitive = hasSelectedRows;
+			};
 	}
 	
 	private void addColumns(IDataReader dataReader) {
