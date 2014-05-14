@@ -13,6 +13,8 @@ public partial class MainWindow: Gtk.Window
 	{
 		Build ();
 		
+		//TreeViewFiller.Fill(treeView, App.Instance.DbConnection, "select id, nombre, categoria, precio from articulo");
+		
 		IDbCommand selectDbCommand = App.Instance.DbConnection.CreateCommand();
 		
 		selectDbCommand.CommandText = "select * from articulo";
@@ -24,6 +26,7 @@ public partial class MainWindow: Gtk.Window
 		ListStore listStore = newListStore(dataReader.FieldCount);
 		treeView.Model = listStore;
 		fillListStore(listStore,dataReader);
+		dataReader.Close();
 		
 		//DELETE
 		deleteAction.Sensitive = false;
@@ -69,11 +72,12 @@ public partial class MainWindow: Gtk.Window
 	}
 	
 	private void fillListStore(ListStore listStore, IDataReader dataReader) {
+		listStore.Clear();
+		
 		while (dataReader.Read()){
 			listStore.AppendValues(dataReader["id"].ToString(),dataReader["nombre"].ToString(), 
 			                       dataReader["categoria"].ToString(), dataReader["precio"].ToString());
 		}
-		dataReader.Close();
 	}
 	
 	
