@@ -12,10 +12,10 @@ public partial class MainWindow: Gtk.Window
 	public MainWindow (): base (Gtk.WindowType.Toplevel)
 	{
 		Build ();
+		TreeViewFiller treeViewFiller = new TreeViewFiller();
+		treeViewFiller.Fill(treeView, App.Instance.DbConnection, "select id, nombre, categoria, precio from articulo");
 		
-		//TreeViewFiller.Fill(treeView, App.Instance.DbConnection, "select id, nombre, categoria, precio from articulo");
-		
-		IDbCommand selectDbCommand = App.Instance.DbConnection.CreateCommand();
+	/*/	IDbCommand selectDbCommand = App.Instance.DbConnection.CreateCommand();
 		
 		selectDbCommand.CommandText = "select * from articulo";
 		
@@ -26,7 +26,9 @@ public partial class MainWindow: Gtk.Window
 		ListStore listStore = newListStore(dataReader.FieldCount);
 		treeView.Model = listStore;
 		fillListStore(listStore,dataReader);
-		dataReader.Close();
+		dataReader.Close(); /*/
+		
+		ListStore listStore = treeViewFiller.getListStore;
 		
 		//DELETE
 		deleteAction.Sensitive = false;
@@ -42,14 +44,15 @@ public partial class MainWindow: Gtk.Window
 			MessageDialog messageDialog = new MessageDialog(this,
 			  DialogFlags.DestroyWithParent, MessageType.Question,
 			  ButtonsType.YesNo,"¿Quieres eliminar el elemento seleccionado?");
-			  messageDialog.Title = "Eliminar elemento";
+			  messageDialog.Title = "Accion de eliminar";
 			
 			ResponseType response = (ResponseType)messageDialog.Run(); 
-			messageDialog.Destroy();
+				messageDialog.Destroy();
+			
 			if (response == ResponseType.Yes) {
-			IDbCommand deleteDbCommand = App.Instance.DbConnection.CreateCommand();
-			deleteDbCommand.CommandText = "delete from articulo where id=" +id;
-				deleteDbCommand.ExecuteNonQuery();
+				IDbCommand deleteDbCommand = App.Instance.DbConnection.CreateCommand();
+					deleteDbCommand.CommandText = "delete from articulo where id=" +id;
+					deleteDbCommand.ExecuteNonQuery();
 			}
 		};
 			treeView.Selection.Changed += delegate {
@@ -57,6 +60,17 @@ public partial class MainWindow: Gtk.Window
 			editAction.Sensitive = hasSelectedRows;
 			deleteAction.Sensitive = hasSelectedRows;
 			};
+		
+			//REFRESH
+			refreshAction.Activated += delegate {
+			listStore.Clear();
+			IDbCommand selectDbCommand = App.Instance.DbConnection.CreateCommand();
+			selectDbCommand.CommandText = "select * from articulo";
+		
+		    IDataReader dataReader = selectDbCommand.ExecuteReader();
+			fillListStore(listStore,dataReader);
+			dataReader.Close();
+		};
 	}
 	
 	private void addColumns(IDataReader dataReader) {
